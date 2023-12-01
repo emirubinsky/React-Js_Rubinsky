@@ -3,7 +3,7 @@
 import cartLogo from '../../assets/cartLogo.svg'
 // import './CartCounter.scss'
 
-const CartCounter = ({items}) => {
+const CartWidget = ({items}) => {
 
     return (
         <>
@@ -15,4 +15,4 @@ const CartCounter = ({items}) => {
     )
 }
 
-export default CartCounter
+export default CartWidget

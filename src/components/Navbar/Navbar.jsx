@@ -1,6 +1,6 @@
 // import './Navbar.scss'
 import logo from '../../assets/organicaLogo32.png'
-import CartCounter from '../CartCounter/CartCounter'
+import CartCounter from '../CartCounter/CartWidget'
 import NavLink from './NavLink'
 
 // TODO - esto luego será parte de la logica intera
