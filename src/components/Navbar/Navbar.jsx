@@ -1,32 +1,50 @@
 // import './Navbar.scss'
-import logo from '../../assets/organicaLogo32.png'
+import logo from "../../assets/organicaLogo32.png";
+import { Link, NavLink } from "react-router-dom";
+import useCategories from "./../../hooks/useCategories";
 import CartCounter from '../CartCounter/CartWidget'
-import NavLink from './NavLink'
-
-// TODO - esto luego será parte de la logica intera
-const items = [1,2,3]
 
 const Navbar = () => {
+  const { categories } = useCategories();
 
-    return (
-        <header className="bg-organica">
-            <div className="container m-auto py-6 flex justify-between items-center">
-                {/* <h1 className="header__title">LOGO</h1> */}
-                {/* <img src="/imgs/react.svg" alt="Logo"/> */}
-                <img src={logo} alt="Logo"/>
+  return (
+    <header className="bg-organica">
+      <div className="container m-auto py-6 flex justify-between items-center">
+        <NavLink
+            key={`/`}
+            to={`/`}
+            className={({ isActive }) =>
+              `text-lg uppercase font-semibold ${
+                isActive ? "text-black-1200" : "text-white"
+              }`
+            }
+          > <img src={logo} alt="Logo" />
+          </NavLink>
 
-                <nav className="flex gap-4">
-                    <NavLink href={"#"} text={"Enlace 1"}/>
-                    <NavLink href={"#"} text={"Enlace 2"}/>
-                    <NavLink href={"#"} text={"Enlace 3"}/>
-                    <NavLink href={"#"} text={"Enlace 4"}/>
-                    <NavLink href={"#"} text={"Enlace 5"}/>
-                </nav>
+        {/* Este NavLink a HOME esta hecho a medida*/}
+        <nav className="flex gap-4">
+          
 
-                <CartCounter items={items}/> 
-            </div>
-        </header>
-    )
-}
+          {/* Lecturas de Categorias para generar dinamicamente el menu*/}
+          {categories.map((category) => (
+            <NavLink
+              key={`/products/${category}`}
+              to={`/products/${category}`}
+              className={({ isActive }) =>
+                `text-lg uppercase  ${
+                  isActive ? "underline font-bold text-black-1200" : "font-semibold text-white"
+                }`
+              }
+            >
+              {category}
+            </NavLink>
+          ))}
+        </nav>
 
-export default Navbar
+        { <CartCounter /> }
+      </div>
+    </header>
+  );
+};
+
+export default Navbar;
