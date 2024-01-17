@@ -1,39 +1,58 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import ItemList from "../ItemList/ItemList";
-import { fetchDataWithFetch } from "../../utils/utils";
 import { useParams } from "react-router-dom";
 import Loader from "../Loader/Loader";
 
-const ItemListContainer = () => {
-  const [productos, setProductos] = useState([])
-  const [loading, setLoading] = useState(true)
+// DB implementation
+import { db } from "../../firebase/config";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
-  const { categoryId } = useParams()
+
+
+const ItemListContainer = () => {
+  const [productos, setProductos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const { categoryLabel } = useParams();
 
   useEffect(() => {
-      setLoading(true)
+    setLoading(true);
 
-      fetchDataWithFetch() // <= Promise
-          .then((data) => {
-            console.log("Data fetched using Fetch:", data);
-              const items = categoryId 
-                              ? data.filter(prod => prod.category === categoryId)
-                              : data
+    // TODO - Mucho acoplamiento
+    // Estamos mezclando mucho la presentación, con la lógica de obtención
+    // de productos x categoría
+    // En una siguiente iteración estaría bueno abstraer esto en un
+    // getCategories y que el "cómo obtener productos x categorias" no le interese a esta capa
+    // 1.- Armar una referencia (sync)
+    const productosRef = collection(db, 'products')
+    const docsRef = categoryLabel
+                      ? query( productosRef, where('category', '==', categoryLabel))
+                      : productosRef
+    // 2.- LLamar a esa referencia (async)
+    getDocs(docsRef)
+      .then((querySnapshot) => {
+        const docs = querySnapshot.docs.map(doc => {
+          return {
+            ...doc.data(),
+            id: doc.id
+          }
+        })
+        
+        console.log( docs )
+        setProductos( docs )
+      })
+      .finally(() => setLoading(false))
 
-              setProductos(items)
-          })
-          .finally(() => setLoading( false ))
-  }, [categoryId])
+  }, [categoryLabel]);
 
   return (
-        <>
-
-          {loading ? (
-            <Loader />
-          ) : (
-            <ItemList productos={productos} categoryId={categoryId} />
-          )}
-        </>
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <ItemList productos={productos} categoryLabel={categoryLabel} />
+      )}
+    </>
   );
 };
 
@@ -56,7 +75,7 @@ export default ItemListContainer;
 
 // * Render Props
 // const ItemListContainer = () => {
-    
+
 //       return (
 //         <ProductsData>
 //           {(productos, loading) => (

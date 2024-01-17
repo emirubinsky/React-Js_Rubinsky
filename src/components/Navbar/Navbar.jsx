@@ -1,6 +1,6 @@
 // import './Navbar.scss'
 import logo from "../../assets/organicaLogo32.png";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import useCategories from "./../../hooks/useCategories";
 import CartCounter from '../CartCounter/CartWidget'
 
@@ -28,15 +28,15 @@ const Navbar = () => {
           {/* Lecturas de Categorias para generar dinamicamente el menu*/}
           {categories.map((category) => (
             <NavLink
-              key={`/products/${category}`}
-              to={`/products/${category}`}
+              key={`/products/${category.id}`}
+              to={`/products/${category.label.toLowerCase()}`}
               className={({ isActive }) =>
                 `text-lg uppercase  ${
                   isActive ? "underline font-bold text-black-1200" : "font-semibold text-white"
                 }`
               }
             >
-              {category}
+              {category.label}
             </NavLink>
           ))}
         </nav>

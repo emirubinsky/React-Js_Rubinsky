@@ -1,14 +1,34 @@
+/* Imports necesarios para hacer una obtención de datos de un JSON plano */
 import MOCK_DATA from "../mock/data.json";
+
+/* Imports necesarios para hacer una obtención de datos desde firebase */
+import { db } from "../firebase/config";
+import { collection, writeBatch, addDoc, setDoc, doc, updateDoc, getDoc, query, where, documentId, getDocs } from "firebase/firestore";
+
 
 // Usamos la pagina: https://fakestoreapi.com/ para obtener un poco de datos dinámicos
 const STORE_API = "https://fakestoreapi.com";
 
-function pedirDatos(){
+// Ex: "pedirDatos"
+function fetchDataFromMock(){
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve(MOCK_DATA);
     }, 1000);
   });
+}
+
+async function fetchDataFromFirebase({collectionName}){
+  const collectionReference = collection(db, collectionName)
+
+  const snapshot = await getDocs(collectionReference)
+
+  const itemsData = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return itemsData
 }
 
 /**
@@ -96,7 +116,8 @@ async function fetchDataWithAsyncAwait() {
 }
 
 export {
-  pedirDatos,
+  fetchDataFromMock,
+  fetchDataFromFirebase,
   fetchDataWithPromise,
   fetchDataWithFetch,
   fetchDataWithAsyncAwait,

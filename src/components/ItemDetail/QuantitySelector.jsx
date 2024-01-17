@@ -1,14 +1,13 @@
-import Boton from "../../ejemplos/Boton";
+import Boton from "../Button/Boton";
 
-const QuantitySelector = ({cantidad, stock, setCantidad}) => {
-
+const QuantitySelector = ({ cantidad, stock, setCantidad }) => {
   const handleSumar = () => {
-    cantidad < stock && setCantidad(cantidad + 1)
-  }
+    cantidad < stock && setCantidad(cantidad + 1);
+  };
 
   const handleRestar = () => {
-    cantidad > 1 && setCantidad(cantidad - 1)
-  }
+    cantidad > 1 && setCantidad(cantidad - 1);
+  };
 
   return (
     <div className="flex gap-4 items-center">

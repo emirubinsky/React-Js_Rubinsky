@@ -1,35 +1,48 @@
 import { useEffect, useState } from "react";
-import { fetchDataWithFetch } from "../../utils/utils";
 import { useParams } from "react-router-dom";
 import ItemDetail from "../ItemDetail/ItemDetail";
 import Loader from "../Loader/Loader";
+
+// DB implementation
+import { db } from "../../firebase/config";
+import { doc, getDoc } from "firebase/firestore";
+
 
 const ItemDetailContainer = () => {
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState(null);
 
-  const { itemId } = useParams()
+  const { itemId } = useParams();
 
   useEffect(() => {
     setLoading(true);
 
-    fetchDataWithFetch()
-      .then((data) => {
-        console.log("Data fetched using Fetch:", data);
-        setItem( data.find(prod => prod.id === Number(itemId)) )
-      })
-      .finally(() => setLoading(false));
-  }, []);
+    // TODO - Mucho acoplamiento
+    // Estamos mezclando mucho la presentación, con la lógica de obtención
+    // de productos x ID
+    // En una siguiente iteración estaría bueno abstraer esto en un
+    // getCategories y que el "cómo obtener productos x categorias" no le interese a esta capa
+    // 1.- Armar una referencia (sync)
 
-  return (
-    <>
-      {loading ? (
-        <Loader />
-      ) : (
-        <ItemDetail item={item}/>
-      )}
-    </>
-  );
+     // 1.- armar la referencia
+     const docRef = doc(db, 'products', itemId)
+     // 2.- llamar a la ref
+     getDoc( docRef )
+       .then((docSnapshot) => {
+         console.log(docSnapshot)
+         const doc = {
+           ...docSnapshot.data(),
+           id: docSnapshot.id
+         }
+ 
+         setItem(doc)
+       })
+       .finally(() => setLoading(false))
+
+       
+  }, [itemId]); // Added this: itemId
+
+  return <>{loading ? <Loader /> : <ItemDetail item={item} />}</>;
 };
 
 export default ItemDetailContainer;

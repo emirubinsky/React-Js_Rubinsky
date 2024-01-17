@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchDataWithFetch } from "../utils/utils";
+import { fetchDataFromFirebase } from "../utils/utils";
 
 const useCategories = () => {
   const [categories, setCategories] = useState([]);
@@ -8,9 +8,10 @@ const useCategories = () => {
   useEffect(() => {
     setLoading(true);
 
-    fetchDataWithFetch("products/categories")
+    // No debería ser una colección?
+    fetchDataFromFirebase({collectionName: 'categories'})
       .then((data) => {
-        console.log("Data fetched using Fetch:", data);
+        console.log("useCategories > Data fetched using Fetch:", data);
         setCategories(data);
         setLoading(false);
       })

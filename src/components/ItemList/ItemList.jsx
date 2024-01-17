@@ -1,14 +1,14 @@
 import ItemCard from "../ItemCard/ItemCard";
 
-// INFO - categoryId en esta FakeApi de la que depende es ya el nombre.
+// INFO - categoryLabel en esta FakeApi de la que depende es ya el nombre.
 // En una iteracion mas habria que obtener el nombre.
-const ItemList = ({ productos, categoryId = null }) => {
+const ItemList = ({ productos, categoryLabel = null }) => {
   return (
     <section className="container m-auto mt-8">
       {/* <CategoryNavbar /> */}
 
       <h2 className="text-4xl font-bold">
-        Products {categoryId ? `- ${categoryId}` : ""}
+        Products {categoryLabel ? `- ${categoryLabel}` : ""}
       </h2>
 
       <hr />
